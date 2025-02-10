@@ -76,6 +76,9 @@
                         <button type="submit" class="btn btn-primary w-100">Create Account</button>
                     </form>
                 </div>
+                <div id="servererror" hidden class="alert alert-danger" role="alert">
+                   
+                    </div>
                 <div class="modal-footer justify-content-center">
                     <p class="mb-0">Already have an account?
                         <button type="button" class="btn btn-link text-primary p-0" data-bs-dismiss="modal"

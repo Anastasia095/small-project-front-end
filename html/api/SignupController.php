@@ -1,94 +1,97 @@
 <?php
 
-// Get database credentials from environment variables
-$DB_HOST = 'db'; // Docker service name for the database (ensure the container is named 'db' in docker-compose.yml)
+header("Content-Type: application/json");
+
+// Set a global exception handler to return JSON errors
+set_exception_handler(function ($e) {
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "message" => "Server error: " . $e->getMessage()
+    ]);
+    exit;
+});
+
+// Database credentials
+$DB_HOST = 'db'; // Docker service name for database
 $DB_USER = getenv('MYSQL_USER');
 $DB_PASS = getenv('MYSQL_PASSWORD');
 $DB_NAME = getenv('MYSQL_DATABASE');
 
-// Establish a connection to the database
+// Establish database connection
 $db = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
-
-// Check the connection
 if ($db->connect_error) {
-    die("Connection failed: " . $db->connect_error);
+    throw new Exception("Connection failed: " . $db->connect_error);
 }
 
-// Handle the signup logic
+// SignupController class
 class SignupController {
-
     protected $db;
 
     public function __construct($db) {
-        // Initialize the database connection
         $this->db = $db;
     }
 
     public function signup() {
         // Ensure the request is a POST request
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode([
-                "success" => false,
-                "message" => "Invalid request method"
-            ]);
+            http_response_code(405);
+            echo json_encode(["success" => false, "message" => "Invalid request method"]);
             exit;
         }
 
-        // Get POST data from JSON
+        // Get JSON data from request body
         $data = json_decode(file_get_contents("php://input"), true);
-
-        // Check if email and password are provided
         if (!isset($data['email']) || !isset($data['password'])) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Email and password are required"
-            ]);
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "Email and password are required"]);
             exit;
         }
 
-        $email = $data['email'];
-        $password = $data['password'];
+        $email = trim($data['email']);
+        $password = trim($data['password']);
+        $fname = trim($data['FirstName']);
+        $lname = trim($data['LastName']);
 
-        // Sanitize input (just in case)
-        $email = $this->db->real_escape_string($email);
-        $password = $this->db->real_escape_string($password);
-
-        // Check if email already exists
-        $query = "SELECT * FROM Users WHERE email = '$email'";
-        $result = $this->db->query($query);
-
-        if ($result->num_rows > 0) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Email is already taken"
-            ]);
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "Invalid email format"]);
             exit;
         }
 
-        // Hash the password (for security)
+        // Check if email already exists using a prepared statement
+        $stmt = $this->db->prepare("SELECT 1 FROM Users WHERE Login = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows > 0) {
+            http_response_code(409);
+            echo json_encode(["success" => false, "message" => "Email is already taken"]);
+            exit;
+        }
+        $stmt->close();
+
+        // Hash the password securely
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert the new user into the database
-        $insertQuery = "INSERT INTO Users (email, password) VALUES ('$email', '$hashedPassword')";
-        if ($this->db->query($insertQuery) === TRUE) {
-            echo json_encode([
-                "success" => true,
-                "message" => "User registered successfully"
-            ]);
+        // Insert new user using prepared statement
+        $stmt = $this->db->prepare("INSERT INTO Users (Login, password, FirstName, LastName) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $email, $hashedPassword, $fname, $lname); // Fix: "ssss" for 4 string params
+        
+        if ($stmt->execute()) {
+            http_response_code(201);
+            echo json_encode(["success" => true, "message" => "User registered successfully"]);
         } else {
-            echo json_encode([
-                "success" => false,
-                "message" => "Error: " . $this->db->error
-            ]);
+            throw new Exception("Database error: " . $this->db->error);
         }
+        
+        $stmt->close();
+        
 
-        // Close database connection
-        $this->db->close();
-
-        exit; // Ensure no additional output is sent
+        exit;
     }
 }
 
-// Instantiate the controller and call the signup function
+// Instantiate the controller and call signup
 $signupController = new SignupController($db);
 $signupController->signup();
