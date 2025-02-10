@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    # PHP + Apache
+    build: .
+    container_name: php_apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/var/www/html # Public files (served by Apache)
+    depends_on:
+      - db
+    environment:
+      MYSQL_HOST: db # The hostname for connecting to MariaDB
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  db:
+    # MariaDB Database
+    image: mariadb:10.6
+    container_name: mariadb
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
