@@ -54,7 +54,7 @@ class SignupController {
         $password = $this->db->real_escape_string($password);
 
         // Check if email already exists
-        $query = "SELECT * FROM users WHERE email = '$email'";
+        $query = "SELECT * FROM Users WHERE email = '$email'";
         $result = $this->db->query($query);
 
         if ($result->num_rows > 0) {
@@ -69,7 +69,7 @@ class SignupController {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // Insert the new user into the database
-        $insertQuery = "INSERT INTO users (email, password) VALUES ('$email', '$hashedPassword')";
+        $insertQuery = "INSERT INTO Users (email, password) VALUES ('$email', '$hashedPassword')";
         if ($this->db->query($insertQuery) === TRUE) {
             echo json_encode([
                 "success" => true,
