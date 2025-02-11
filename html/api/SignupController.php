@@ -4,7 +4,7 @@ require_once '../db.php';
 
 header("Content-Type: application/json");
 
-// Set a global exception handler to return JSON errors
+//make sure errors are returned in json format
 set_exception_handler(function ($e) {
     http_response_code(500);
     echo json_encode([
@@ -15,7 +15,6 @@ set_exception_handler(function ($e) {
 });
 
 
-// SignupController class
 class SignupController {
     protected $db;
 
@@ -24,14 +23,7 @@ class SignupController {
     }
 
     public function signup() {
-        // Ensure the request is a POST request
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(["success" => false, "message" => "Invalid request method"]);
-            exit;
-        }
 
-        // Get JSON data from request body
         $data = json_decode(file_get_contents("php://input"), true);
         if (!isset($data['email']) || !isset($data['password'])) {
             http_response_code(400);
@@ -51,7 +43,7 @@ class SignupController {
             exit;
         }
 
-        // Check if email already exists using a prepared statement
+        // Check if email already used
         $stmt = $this->db->prepare("SELECT 1 FROM Users WHERE Login = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -62,12 +54,12 @@ class SignupController {
         }
         $stmt->close();
 
-        // Hash the password securely
+        // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert new user using prepared statement
+        // Insert new user into the table
         $stmt = $this->db->prepare("INSERT INTO Users (Login, password, FirstName, LastName) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $email, $hashedPassword, $fname, $lname); // Fix: "ssss" for 4 string params
+        $stmt->bind_param("ssss", $email, $hashedPassword, $fname, $lname); 
         
         if ($stmt->execute()) {
             http_response_code(201);
@@ -83,6 +75,5 @@ class SignupController {
     }
 }
 
-// Instantiate the controller and call signup
 $signupController = new SignupController($db);
 $signupController->signup();

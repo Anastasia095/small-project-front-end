@@ -40,8 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-    // Handle Signup Form Submission
-    // Handle Signup Form Submission
     document.querySelector("#SignupModal form").addEventListener("submit", async function (event) {
         event.preventDefault();
 
@@ -88,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.success) {
                         window.location.href = '/contacts.php'; // Redirect on success
                     } else {
-                        errorDiv.textContent = data.message; // Show error message
-                        errorDiv.hidden = false; // Make error visible
+                        errorDiv.textContent = data.message;
+                        errorDiv.hidden = false;
                     }
                 } catch (error) {
                     console.error("Failed to parse JSON:", error);
@@ -98,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (error) {
                 console.error("Error:", error);
                 errorDiv.textContent = error.message;
-                errorDiv.hidden = false; // Show error message
+                errorDiv.hidden = false;
             }
         }
 

@@ -39,3 +39,12 @@ CREATE TABLE `Users` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;```
 ````
+### some fake data to seed db
+````sql
+INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES
+('John', 'Doe', '123-456-7890', 'johndoe@example.com', 1),
+('Jane', 'Smith', '987-654-3210', 'janesmith@example.com', 1),
+('Mike', 'Johnson', '555-123-4567', 'mikejohnson@example.com', 1),
+('Emily', 'Davis', '444-987-6543', 'emilydavis@example.com', 1),
+('David', 'Brown', '333-222-1111', 'davidbrown@example.com', 1);
+````

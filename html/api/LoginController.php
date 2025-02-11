@@ -2,7 +2,6 @@
 
 require_once '../db.php'; 
 
-// Handle the login logic
 class LoginController {
     protected $db;
 
@@ -11,19 +10,11 @@ class LoginController {
     }
 
     public function login() {
-        // Ensure the request is a POST request
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode([
-                "success" => false,
-                "message" => "Invalid request method"
-            ]);
-            exit;
-        }
 
         // Get POST data from JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
-        // Check if email and password are provided
+        // Check if email and password are set
         if (!isset($data['email']) || !isset($data['password'])) {
             echo json_encode([
                 "success" => false,
@@ -38,7 +29,6 @@ class LoginController {
         // Sanitize input
         $email = $this->db->real_escape_string($email);
 
-        // Prepare the query to retrieve the user from the database
         $stmt = $this->db->prepare("SELECT id, password FROM  Users WHERE Login = ?");
         if (!$stmt) {
             echo json_encode([
@@ -53,11 +43,10 @@ class LoginController {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            // Bind the results
             $stmt->bind_result($userId, $hashedPassword);
             $stmt->fetch();
 
-            // Verify the provided password
+            // Verify password
             if (password_verify($password, $hashedPassword)) {
                 echo json_encode([
                     "success" => true,
@@ -77,15 +66,13 @@ class LoginController {
             ]);
         }
 
-        // Close the statement and database connection
         $stmt->close();
         $this->db->close();
 
-        exit; // Ensure no additional output is sent
+        exit;
     }
 }
 
-// Instantiate the controller and call the login function
 $loginController = new LoginController($db);
 $loginController->login();
 ?>

@@ -25,23 +25,22 @@
                         <th scope="col" colspan="2">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>123-456-7890</td>
-                        <td>some@email.com</td>
-                        <td><button type="button" class="btn btn-warning mx-1">✏ Update</button></td>
-                        <td><button type="button" class="btn btn-danger mx-1">🗑 Delete</button></td>
-                    </tr>
+                <tbody id="contacts-table-body">
+                
                 </tbody>
             </table>
         </div>
+
+        <div id="no-contacts-message" class="alert alert-warning text-center shadow-sm bg-white rounded d-none">
+            No contacts found. Add a new contact below!
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            <button type="button" class="btn btn-primary mx-1">➕ Add Contact</button>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+    <script src="/js/contacts.js"></script>
 
 </body>
 
