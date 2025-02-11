@@ -56,7 +56,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const response = await fetch("/api/SignupController.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: signupEmail, password: signupPassword, FirstName: 'Test', LastName: 'Test' }),
+                    body: JSON.stringify({
+                        email: signupEmail,
+                        password: signupPassword,
+                        FirstName: 'Test',
+                        LastName: 'Test'
+                    }),
                 });
 
                 const text = await response.text(); // Get response as text

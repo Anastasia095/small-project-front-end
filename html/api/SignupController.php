@@ -1,5 +1,7 @@
 <?php
 
+require_once '../db.php'; 
+
 header("Content-Type: application/json");
 
 // Set a global exception handler to return JSON errors
@@ -12,17 +14,6 @@ set_exception_handler(function ($e) {
     exit;
 });
 
-// Database credentials
-$DB_HOST = 'db'; // Docker service name for database
-$DB_USER = getenv('MYSQL_USER');
-$DB_PASS = getenv('MYSQL_PASSWORD');
-$DB_NAME = getenv('MYSQL_DATABASE');
-
-// Establish database connection
-$db = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
-if ($db->connect_error) {
-    throw new Exception("Connection failed: " . $db->connect_error);
-}
 
 // SignupController class
 class SignupController {
