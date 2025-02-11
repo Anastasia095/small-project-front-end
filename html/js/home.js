@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Handle Login Form Submission
+    // Handle Login
     document.querySelector("#exampleModal form").addEventListener("submit", function (event) {
         event.preventDefault();
         const loginEmail = document.getElementById("exampleInputEmail1").value;
@@ -16,17 +16,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!response.ok) {
                     throw new Error(`Server responded with status ${response.status}`);
                 }
-                return response.text(); // Get response as text
+                return response.text();
             })
             .then(text => {
                 try {
-                    const data = JSON.parse(text); // Try to parse the text as JSON
+                    // Try to parse as JSON
+                    const data = JSON.parse(text);
                     console.log("Server Response:", data);
 
                     if (data.success) {
-                        window.location.href = '/contacts.php'; // Redirect on success
+                        // Redirect on success
+                        window.location.href = '/contacts.php';
                     } else {
-                        alert(data.message); // Show error message if login fails
+                        alert(data.message); // Show error TODO: fix this
                     }
                 } catch (error) {
                     console.error("Failed to parse JSON:", error);
@@ -62,29 +64,34 @@ document.addEventListener("DOMContentLoaded", function () {
                     }),
                 });
 
-                const text = await response.text(); // Get response as text
+                const text = await response.text();
 
                 let data;
+                //TODO revise
                 try {
-                    data = JSON.parse(text); // Try parsing JSON
+                    // Try parsing JSON
+                    data = JSON.parse(text);
                 } catch {
-                    data = { message: text }; // If parsing fails, treat as plain text
+                    // If parsing fails, treat as plain text
+                    data = { message: text };
                 }
 
                 if (!response.ok) {
                     console.log("Server Error Response:", data);
                     errorDiv.textContent = data.message || `Error: ${response.statusText}`;
-                    errorDiv.hidden = false; // Show error message
+                    errorDiv.hidden = false; // Show error
                     throw new Error(data.message || `Server responded with status ${response.status}`);
                 }
 
 
                 try {
-                    const data = JSON.parse(text); // Try to parse the text as JSON
+                    // Try to parse the text as JSON
+                    const data = JSON.parse(text);
                     console.log("Server Response:", data);
 
                     if (data.success) {
-                        window.location.href = '/contacts.php'; // Redirect on success
+                        // Redirect on success
+                        window.location.href = '/contacts.php';
                     } else {
                         errorDiv.textContent = data.message;
                         errorDiv.hidden = false;
