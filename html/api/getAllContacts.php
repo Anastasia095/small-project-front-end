@@ -2,7 +2,7 @@
 
 require_once '../db.php'; 
 
-class GetContactsController {
+class getAllContacts {
     protected $db;
 
     public function __construct($db) { 
@@ -56,7 +56,7 @@ class GetContactsController {
 }
 
 
-$getContactsController = new GetContactsController($db);
+$getContactsController = new getAllContacts($db);
 $getContactsController->getContacts();
 
 ?>

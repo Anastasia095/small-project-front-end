@@ -2,7 +2,7 @@
 
 require_once '../db.php'; 
 
-class LoginController {
+class Login {
     protected $db;
 
     public function __construct($db) { 
@@ -73,6 +73,6 @@ class LoginController {
     }
 }
 
-$loginController = new LoginController($db);
+$loginController = new Login($db);
 $loginController->login();
 ?>

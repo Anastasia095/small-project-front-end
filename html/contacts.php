@@ -36,7 +36,7 @@
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-            <button type="button" class="btn btn-primary mx-1">➕ Add Contact</button>
+            <button id="addcontact" type="button" class="btn btn-primary mx-1">➕ Add Contact</button>
         </div>
     </div>
 

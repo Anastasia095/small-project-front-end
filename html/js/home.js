@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Login Attempt:", { email: loginEmail, password: loginPassword });
 
-        fetch("/api/LoginController.php", {
+        fetch("/api/Login.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: loginEmail, password: loginPassword }),
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         async function handleSignup() {
             try {
-                const response = await fetch("/api/SignupController.php", {
+                const response = await fetch("/api/Register.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

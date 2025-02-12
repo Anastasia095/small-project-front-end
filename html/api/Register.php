@@ -15,7 +15,7 @@ set_exception_handler(function ($e) {
 });
 
 
-class SignupController {
+class Register {
     protected $db;
 
     public function __construct($db) {
@@ -75,5 +75,5 @@ class SignupController {
     }
 }
 
-$signupController = new SignupController($db);
+$signupController = new Register($db);
 $signupController->signup();
