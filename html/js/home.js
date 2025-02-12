@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (data.success) {
                         // Redirect on success
-                        window.location.href = '/contacts.php';
+                        window.location.href = '/contacts.html';
                     } else {
                         alert(data.message); // Show error TODO: fix this
                     }
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (data.success) {
                         // Redirect on success
-                        window.location.href = '/contacts.php';
+                        window.location.href = '/contacts.html';
                     } else {
                         errorDiv.textContent = data.message;
                         errorDiv.hidden = false;
