@@ -1,48 +1,39 @@
+// API Calls Module
 const fetchContacts = async (userId) => {
     try {
-        // GET request to the API endpoint with the user ID
         const response = await fetch(`/api/getAllContacts.php?user_id=${userId}`);
-
-        // Parse the response as JSON
         const data = await response.json();
 
-        // Check if response is good and not error
         if (!data.success) {
-            // If not, throw an error with the message from the server
             throw new Error(data.message || "Unknown error");
         }
 
-        // Return the list of contacts
         return data.contacts;
     } catch (error) {
-        // Log any errors in the console
         console.error("Error fetching contacts:", error);
-
         throw error;
     }
 };
 
-// render the list of contacts
+// UI Update Module
 const renderContacts = (contacts) => {
-    // Select table element where contacts will be displayed
     const tableBody = document.getElementById("contacts-table-body");
-
-    // Select element for when no contacts are available
     const noContactsMessage = document.getElementById("no-contacts-message");
 
-    // Check if there are no contacts
+    // Clear the table before rendering new contacts
+    tableBody.innerHTML = '';
+
+    //hide/add container with " No Contacts Message"
     if (contacts.length === 0) {
-        // If no contacts, show noContactsMessage element
         noContactsMessage.classList.remove("d-none");
     } else {
-        // if we have contacts hide noContactsMessage container
         noContactsMessage.classList.add("d-none");
 
-        // Loop through contacts and create table rows
+        //loop over contacts to create table rows
         contacts.forEach((contact, index) => {
             const row = document.createElement("tr");
 
-            // inner HTML with contact details
+            //that speak for itself
             row.innerHTML = `
                 <th scope="row">${index + 1}</th>
                 <td>${contact.name}</td>
@@ -51,28 +42,38 @@ const renderContacts = (contacts) => {
                 <td><button type="button" class="btn btn-warning mx-1">✏ Update</button></td>
                 <td><button type="button" class="btn btn-danger mx-1">🗑 Delete</button></td>
             `;
-
-            // Append the row to the table
+            //inject generated html to the table element
             tableBody.appendChild(row);
         });
     }
 };
 
-//load contacts on page load
+//handle errors, that needs to be tweaked I think maybe not not sure
+const showErrorMessage = (message, elementId) => {
+    const errorDiv = document.getElementById(elementId);
+    errorDiv.textContent = message;
+    errorDiv.classList.remove("d-none");
+};
+
+// Event Handlers
 const loadContacts = async () => {
     const userId = 1; // Placeholder for the user ID
     const noContactsMessage = document.getElementById("no-contacts-message");
-    try {
-        // Fetch the contacts
-        const contacts = await fetchContacts(userId);
 
-        // Render the contacts in the table
+    try {
+        const contacts = await fetchContacts(userId);
         renderContacts(contacts);
     } catch (error) {
-        // If there's an error, display an error in the container
-        noContactsMessage.textContent = "Failed to load contacts.";
-        noContactsMessage.classList.remove("d-none");
+        showErrorMessage("Failed to load contacts.", "no-contacts-message");
     }
 };
 
-document.addEventListener("DOMContentLoaded", loadContacts);
+// Event Listeners
+const initializeEventListeners = () => {
+    document.addEventListener("DOMContentLoaded", loadContacts);
+
+    //TODO:  Add more listeners here, for delete/edit create buttons
+};
+
+// Initialize all event listeners
+initializeEventListeners();
