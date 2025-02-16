@@ -13,12 +13,10 @@ class deleteContact
 
     public function deleteContactById($contactId)
     {
-        // Ensure contact ID is provided
         if (empty($contactId)) {
             return $this->sendError("Contact ID is required");
         }
 
-        // SQL query to delete a contact
         $sql = "DELETE FROM Contacts WHERE ID = ?";
         $stmt = $this->db->prepare($sql);
 
