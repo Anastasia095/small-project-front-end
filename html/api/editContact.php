@@ -13,48 +13,53 @@ class editContact
 
     public function updateContact()
     {
-        // Get POST data
-        $contactId = isset($_POST['contact_id']) ? intval($_POST['contact_id']) : 0;
-        $firstName = isset($_POST['first_name']) ? trim($_POST['first_name']) : '';
-        $lastName = isset($_POST['last_name']) ? trim($_POST['last_name']) : '';
-        $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
-        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $data = json_decode(file_get_contents("php://input"), true);
 
-        // Validate inputs
-        if ($contactId === 0 || empty($firstName) || empty($lastName) || empty($phone)) {
-            echo json_encode([
-                "success" => false,
-                "message" => "All fields are required."
-            ]);
-            exit;
+        // Check for missing fields
+        $requiredFields = ['id', 'fname', 'lname', 'phone', 'email'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;
+            }
         }
 
-        // SQL query to update an existing contact
-        $stmt = $this->db->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE ID = ?");
+        if (!empty($missingFields)) {
+            return $this->sendError("The following fields are missing: " . implode(", ", $missingFields));
+        }
+
+
+        // Sanitize
+        $id = trim($data['id']);
+        $fname = trim($data['fname']);
+        $lname = trim($data['lname']);
+        $phone = trim($data['phone']);
+        $email = trim($data['email']);
+
+        $sql = "UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE ID = ?";
+        $stmt = $this->db->prepare($sql);
+
         if (!$stmt) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Database error: " . $this->db->error
-            ]);
-            exit;
+            return $this->sendError("Database error: " . $this->db->error);
         }
 
-        $stmt->bind_param("ssssi", $firstName, $lastName, $phone, $email, $contactId);
+        $stmt->bind_param("ssssi", $fname, $lname, $phone, $email, $id);
 
         if ($stmt->execute()) {
-            echo json_encode([
-                "success" => true,
-                "message" => "Contact updated successfully."
-            ]);
+            echo json_encode(["success" => true, "message" => "Contact updated successfully"]);
         } else {
-            echo json_encode([
-                "success" => false,
-                "message" => "Failed to update contact."
-            ]);
+            $this->sendError("Failed to update contact");
         }
 
         $stmt->close();
         $this->db->close();
+    }
+
+    private function sendError($message)
+    {
+        echo json_encode(["success" => false, "message" => $message]);
+        exit;
     }
 }
 

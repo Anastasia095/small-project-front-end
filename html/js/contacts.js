@@ -1,8 +1,7 @@
-// At the top of your current file
 import { retrieveSession } from './session.js';
 
 
-// API Calls Module
+// API Calls
 const fetchContacts = async (userId) => {
     try {
         const response = await fetch(`/api/getAllContacts.php?user_id=${userId}`);
@@ -19,70 +18,6 @@ const fetchContacts = async (userId) => {
     }
 };
 
-// UI Update Module
-
-const redirectToContacts = () => {
-    window.location.href = '/contacts.html';
-};
-
-const renderContacts = (contacts) => {
-    const tableBody = document.getElementById("contacts-table-body");
-    const noContactsMessage = document.getElementById("no-contacts-message");
-
-    // Clear the table before rendering new contacts
-    tableBody.innerHTML = '';
-
-    //hide/add container with " No Contacts Message"
-    if (contacts.length === 0) {
-        noContactsMessage.classList.remove("d-none");
-    } else {
-        noContactsMessage.classList.add("d-none");
-
-        //loop over contacts to create table rows
-        contacts.forEach((contact, index) => {
-            const row = document.createElement("tr");
-
-            //that speak for itself
-            row.innerHTML = `
-                <th scope="row">${index + 1}</th>
-               <td>${contact.lname} ${contact.fname}</td>
-                <td><a href="tel:${contact.number}">${contact.number} </a></td>
-                <td><a href="mailto:${contact.email}">${contact.email}</a></td>
-                <td>
-                    <button type="button" class="button-update" data-bs-toggle="modal"
-                    data-bs-target="#editModal"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#editModal"
-                    data-id="${index + 1}"
-                    data-firstname="${contact.fname}"
-                    data-lastname="${contact.lname}"
-                    data-phone="${contact.number}"
-                    data-email="${contact.email}">
-                        <img src="https://img.icons8.com/?size=100&id=12133&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
-                        
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="button-delete">
-                        <img src="https://img.icons8.com/?size=100&id=u3z0y0I7ZJsN&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
-                        
-                    </button>
-                </td>
-            `;
-            //inject generated html to the table element
-            tableBody.appendChild(row);
-        });
-    }
-};
-
-//handle errors, that needs to be tweaked I think maybe not not sure
-const showErrorMessage = (message, elementId) => {
-    const errorDiv = document.getElementById(elementId);
-    errorDiv.textContent = message;
-    errorDiv.classList.remove("d-none");
-};
-
-// API Calls Module
 const addContact = async (fname, lname, phone, email) => {
     const session = retrieveSession();
     if (!session || !session.userId) {
@@ -114,9 +49,8 @@ const addContact = async (fname, lname, phone, email) => {
     return data;
 };
 
-// API Calls Module
-// API Calls Module
 const editContact = async (id, fname, lname, phone, email) => {
+    console.log(id, fname, lname, phone, email);
     const response = await fetch("/api/editContact.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -137,6 +71,68 @@ const editContact = async (id, fname, lname, phone, email) => {
     }
 
     return data;
+};
+
+// UI Updates
+const redirectToContacts = () => {
+    window.location.href = '/contacts.html';
+};
+
+const renderContacts = (contacts) => {
+    const tableBody = document.getElementById("contacts-table-body");
+    const noContactsMessage = document.getElementById("no-contacts-message");
+
+    // Clear the table before rendering new contacts
+    tableBody.innerHTML = '';
+
+    //hide/add container with " No Contacts Message"
+    if (contacts.length === 0) {
+        noContactsMessage.classList.remove("d-none");
+    } else {
+        noContactsMessage.classList.add("d-none");
+
+        //loop over contacts
+        contacts.forEach((contact, index) => {
+            const row = document.createElement("tr");
+
+            //that speak for itself
+            row.innerHTML = `
+                <th scope="row">${index + 1}</th>
+               <td>${contact.fname} ${contact.lname}</td>
+                <td><a href="tel:${contact.number}">${contact.number} </a></td>
+                <td><a href="mailto:${contact.email}">${contact.email}</a></td>
+                <td>
+                    <button type="button" class="button-update" data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#editModal"
+                    data-id="${contact.id}"
+                    data-firstname="${contact.fname}"
+                    data-lastname="${contact.lname}"
+                    data-phone="${contact.number}"
+                    data-email="${contact.email}">
+                        <img src="https://img.icons8.com/?size=100&id=12133&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
+                        
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="button-delete">
+                        <img src="https://img.icons8.com/?size=100&id=u3z0y0I7ZJsN&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
+                        
+                    </button>
+                </td>
+            `;
+            //inject generated html to the table element
+            tableBody.appendChild(row);
+        });
+    }
+};
+
+//handle errors, that needs to be tweaked I think maybe not not sure
+const showErrorMessage = (message, elementId) => {
+    const errorDiv = document.getElementById(elementId);
+    errorDiv.textContent = message;
+    errorDiv.classList.remove("d-none");
 };
 
 
@@ -176,7 +172,6 @@ const handleAddContact = async (event) => {
 
         if (data.success) {
             redirectToContacts();
-            // console.log("success");
         } else {
             alert(data.message); // todo
         }
@@ -189,16 +184,18 @@ const handleAddContact = async (event) => {
 const handleEditContact = async (event) => {
     event.preventDefault();
 
+    const id = document.getElementById("editContactId").value;
     const fname = document.getElementById("editFirstName").value;
     const lname = document.getElementById("editLastName").value;
     const phone = document.getElementById("editPhone").value;
     const email = document.getElementById("editEmail").value;
 
     try {
-        const data = await addContact(loginEmail, loginPassword);
+        const data = await editContact(id, fname, lname, phone, email);
 
         if (data.success) {
-            redirectToContacts();
+            // redirectToContacts();
+            console.log("success");
         } else {
             alert(data.message); // todo
         }
