@@ -175,8 +175,8 @@ const handleAddContact = async (event) => {
         const data = await addContact(fname, lname, phone, email);
 
         if (data.success) {
-            // redirectToContacts();
-            console.log("success");
+            redirectToContacts();
+            // console.log("success");
         } else {
             alert(data.message); // todo
         }
