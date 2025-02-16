@@ -1,3 +1,7 @@
+// At the top of your current file
+import { retrieveSession } from './session.js';
+
+
 // API Calls Module
 const fetchContacts = async (userId) => {
     try {
@@ -80,10 +84,18 @@ const showErrorMessage = (message, elementId) => {
 
 // API Calls Module
 const addContact = async (fname, lname, phone, email) => {
+    const session = retrieveSession();
+    if (!session || !session.userId) {
+        window.location.href = "/";
+        return;
+    }
+
+    const userId = session.userId;
+    console.log(userId);
     const response = await fetch("/api/addContact.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fname, lname, phone, email }),
+        body: JSON.stringify({ fname, lname, phone, email, userId }),
     });
 
     if (!response.ok) {
@@ -130,7 +142,14 @@ const editContact = async (id, fname, lname, phone, email) => {
 
 // Event Handlers
 const loadContacts = async () => {
-    const userId = 1; // Placeholder for the user ID
+    const session = retrieveSession();
+    if (!session || !session.userId) {
+        window.location.href = "/";
+        return;
+    }
+
+    const userId = session.userId;
+
     const noContactsMessage = document.getElementById("no-contacts-message");
 
     try {
@@ -156,7 +175,8 @@ const handleAddContact = async (event) => {
         const data = await addContact(fname, lname, phone, email);
 
         if (data.success) {
-            redirectToContacts();
+            // redirectToContacts();
+            console.log("success");
         } else {
             alert(data.message); // todo
         }

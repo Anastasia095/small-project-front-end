@@ -1,3 +1,4 @@
+import { sessionLogin } from './session.js';
 // API Calls Module
 const loginUser = async (email, password) => {
     const response = await fetch("/api/Login.php", {
@@ -73,10 +74,11 @@ const handleLogin = async (event) => {
     try {
         const data = await loginUser(loginEmail, loginPassword);
 
-        if (data.success) {
+        if (data.userId && data.error == null) {
+            sessionLogin(data.userId);
             redirectToContacts();
-        } else {
-            alert(data.message); // To be improved later
+        } else if (data.error) {
+            showErrorMessage(data.error, "SigninModalError");
         }
     } catch (error) {
         console.error("Login Error:", error);

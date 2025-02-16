@@ -25,6 +25,7 @@ class addContact
         $phone = trim($data['phone']);
         $fname = trim($data['fname']);
         $lname = trim($data['lname']);
+        $userId = trim($data['userId']);
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -45,7 +46,7 @@ class addContact
         $stmt->close();
 
         // SQL query to insert a new contact (ID is auto-generated)
-        $stmt = $this->db->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?)");
         if (!$stmt) {
             echo json_encode([
                 "success" => false,
@@ -54,7 +55,7 @@ class addContact
             exit;
         }
 
-        $stmt->bind_param("ssss", $fname, $lname, $phone, $email);
+        $stmt->bind_param("sssss", $fname, $lname, $phone, $email, $userId);
 
         if ($stmt->execute()) {
             // Get the ID of the newly inserted contact (auto-generated)
