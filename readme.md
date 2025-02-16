@@ -22,7 +22,7 @@ CREATE TABLE `Users` (
   `Login` varchar(50) NOT NULL,
   `Password` varchar(250) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;```
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ````
 ## Contacts table
 
@@ -36,7 +36,7 @@ CREATE TABLE `Users` (
   `Email` varchar(50) DEFAULT NULL,
   `UserID` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;```
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ````
 ### some fake data to seed db
 ````sql

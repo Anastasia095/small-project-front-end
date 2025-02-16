@@ -1,26 +1,240 @@
 body {
-    /* background-color: #f8f9fa; */
-    background-image: url('../images/background.jpg');
+    background-image: url('https://mrwallpaper.com/images/hd/sailor-moon-pastel-city-background-kzns45d8rjz6s4pz.jpg');
+    background-size: cover;
+    background-position: center;
 }
+
 
 .modal-content {
+    background-color: #fee6e3;
+    /* Same background as the button */
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
+    border: 2px solid #111;
 }
 
 .modal-header {
     border-bottom: none;
+    background-color: #fee6e3;
+    padding: 16px 24px;
+}
+
+.modal-body {
+    background-color: #fee6e3;
+    padding: 24px;
 }
 
 .modal-footer {
     border-top: none;
+    background-color: #fee6e3;
+    padding: 16px 24px;
+}
+
+.modal-header .modal-title {
+    font-family: Inter, sans-serif;
+    font-size: 24px;
+    color: #111;
+    margin: 0;
+}
+
+
+/* Button inside the modal */
+.button-56 {
+    align-items: center;
+    background-color: #fee6e3;
+    border: 2px solid #111;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #111;
+    cursor: pointer;
+    display: flex;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    height: 48px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 100%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-56:after {
+    background-color: #111;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 48px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.button-56:hover:after {
+    transform: translate(0, 0);
+}
+
+.button-56:active {
+    background-color: #ffdeda;
+    outline: 0;
+}
+
+.button-56:hover {
+    outline: 0;
+}
+
+@media (min-width: 768px) {
+    .button-56 {
+        padding: 0 40px;
+    }
+}
+
+
+
+/* Delete Button */
+.button-delete {
+    align-items: center;
+    background-color: #e09393;
+    border: 2px solid #cc0000;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #cc0000;
+    cursor: pointer;
+    /* display: flex; */
+    /* justify-content: center; */
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    height: 48px;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-delete:after {
+    background-color: #cc0000;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 48px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.button-delete:hover:after {
+    transform: translate(0, 0);
+}
+
+.button-delete:active {
+    background-color: #ffcccc;
+    outline: 0;
+}
+
+.button-delete:hover {
+    outline: 0;
+}
+
+/* Update Button */
+.button-update {
+    align-items: center;
+    background-color: #e6f0ff;
+    border: 2px solid #0056b3;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #0056b3;
+    cursor: pointer;
+    /* display: flex;
+    justify-content: center; */
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    height: 48px;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-update:after {
+    background-color: #0056b3;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 48px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.button-update:hover:after {
+    transform: translate(0, 0);
+}
+
+.button-update:active {
+    background-color: #cce0ff;
+    outline: 0;
+}
+
+.button-update:hover {
+    outline: 0;
+}
+
+
+/* Custom Table */
+.table {
+    border-collapse: separate;
+
+    border: 2px solid #111;
+    border-radius: 8px;
+
+    background-color: rgba(254, 230, 227, 0.9);
+}
+
+/* Custom Table Header */
+.table-header-custom th {
+    background-color: rgba(203, 149, 216, 0.9);
+    /* Slightly transparent background */
+    color: #111;
+    padding: 15px;
+    border-bottom: 2px solid #111;
+    font-family: Inter, sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Make sure the header has rounded top corners */
+.table thead:first-child tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.table thead:first-child tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+
+
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
 }

@@ -36,11 +36,29 @@ const renderContacts = (contacts) => {
             //that speak for itself
             row.innerHTML = `
                 <th scope="row">${index + 1}</th>
-                <td>${contact.name}</td>
+               <td>${contact.lname} ${contact.fname}</td>
                 <td>${contact.number}</td>
                 <td>${contact.email}</td>
-                <td><button type="button" class="btn btn-warning mx-1">✏ Update</button></td>
-                <td><button type="button" class="btn btn-danger mx-1">🗑 Delete</button></td>
+                <td>
+                    <button type="button" class="button-update" data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#editModal"
+                    data-id="${index + 1}"
+                    data-firstname="${contact.fname}"
+                    data-lastname="${contact.lname}"
+                    data-phone="${contact.number}"
+                    data-email="${contact.email}">
+                        <img src="https://img.icons8.com/?size=100&id=12133&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
+                        
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="button-delete">
+                        <img src="https://img.icons8.com/?size=100&id=u3z0y0I7ZJsN&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
+                        
+                    </button>
+                </td>
             `;
             //inject generated html to the table element
             tableBody.appendChild(row);
@@ -121,7 +139,27 @@ const handleAddContact = async (event) => {
 const initializeEventListeners = () => {
     document.addEventListener("DOMContentLoaded", loadContacts);
     document.querySelector("#addModal form").addEventListener("submit", handleAddContact);
-    //TODO:  Add more listeners here, for delete/edit create buttons
+
+    // Attach event listeners to update buttons
+    document.addEventListener('click', function (event) {
+        if (event.target.closest('.button-update')) {
+            const button = event.target.closest('.button-update');
+
+            // Get data from button attributes
+            const id = button.getAttribute('data-id');
+            const fname = button.getAttribute('data-firstname');
+            const lname = button.getAttribute('data-lastname');
+            const phone = button.getAttribute('data-phone');
+            const email = button.getAttribute('data-email');
+
+            // Populate modal fields
+            document.getElementById('editContactId').value = id;
+            document.getElementById('editFirstName').value = fname;
+            document.getElementById('editLastName').value = lname;
+            document.getElementById('editPhone').value = phone;
+            document.getElementById('editEmail').value = email;
+        }
+    });
 };
 
 // Initialize all event listeners

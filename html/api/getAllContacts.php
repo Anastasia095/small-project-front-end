@@ -1,15 +1,18 @@
 <?php
 
-require_once '../db.php'; 
+require_once '../db.php';
 
-class getAllContacts {
+class getAllContacts
+{
     protected $db;
 
-    public function __construct($db) { 
+    public function __construct($db)
+    {
         $this->db = $db;
     }
 
-    public function getContacts() {
+    public function getContacts()
+    {
         // Get user_id from request
         $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
 
@@ -39,7 +42,8 @@ class getAllContacts {
         while ($row = $result->fetch_assoc()) {
             $contacts[] = [
                 "id" => $row["ID"],
-                "name" => $row["FirstName"] . " " . $row["LastName"],
+                "fname" => $row["FirstName"],
+                "lname" => $row["LastName"],
                 "number" => $row["Phone"],
                 "email" => $row["Email"]
             ];
@@ -58,5 +62,3 @@ class getAllContacts {
 
 $getContactsController = new getAllContacts($db);
 $getContactsController->getContacts();
-
-?>
