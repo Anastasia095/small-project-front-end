@@ -73,6 +73,34 @@ const editContact = async (id, fname, lname, phone, email) => {
     return data;
 };
 
+// Function to delete a contact
+const deleteContact = async (contactId) => {
+    try {
+        const response = await fetch(`/api/deleteContact.php?id=${contactId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || "Unknown error");
+        }
+
+        console.log("Contact deleted successfully");
+
+        window.location.reload();
+
+    } catch (error) {
+        console.error("Error deleting contact:", error);
+        throw error;
+    }
+};
+
+
+
 // UI Updates
 const redirectToContacts = () => {
     window.location.href = '/contacts.html';
@@ -116,9 +144,8 @@ const renderContacts = (contacts) => {
                     </button>
                 </td>
                 <td>
-                    <button type="button" class="button-delete">
-                        <img src="https://img.icons8.com/?size=100&id=u3z0y0I7ZJsN&format=png&color=000000" alt="Update" style="width: 25px; height: 25px; margin-right: 5px;">
-                        
+                    <button type="button" class="button-delete" data-id="${contact.id}">
+                        <img src="https://img.icons8.com/?size=100&id=u3z0y0I7ZJsN&format=png&color=000000" alt="Delete" style="width: 25px; height: 25px; margin-right: 5px;">
                     </button>
                 </td>
             `;
@@ -212,7 +239,7 @@ const initializeEventListeners = () => {
     document.querySelector("#editModal form").addEventListener("submit", handleEditContact);
 
     // Attach event listeners to update buttons
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', async function (event) { // Make this function async
         if (event.target.closest('.button-update')) {
             const button = event.target.closest('.button-update');
 
@@ -229,8 +256,24 @@ const initializeEventListeners = () => {
             document.getElementById('editPhone').value = phone;
             document.getElementById('editEmail').value = email;
         }
+
+        // Handle delete button clicks using event delegation
+        if (event.target.closest('.button-delete')) {
+            const button = event.target.closest('.button-delete');
+            const contactId = button.getAttribute('data-id'); // Get the contact ID from the data-id attribute
+
+            try {
+                // Call the deleteContact function with the contact ID
+                await deleteContact(contactId); // Assuming deleteContact is defined as previously
+                console.log("Contact deleted successfully");
+
+            } catch (error) {
+                console.error("Error deleting contact:", error);
+            }
+        }
     });
+
 };
 
-// Initialize all event listeners
+// Initialize event listeners
 initializeEventListeners();
