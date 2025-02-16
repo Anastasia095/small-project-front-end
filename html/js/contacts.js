@@ -16,6 +16,11 @@ const fetchContacts = async (userId) => {
 };
 
 // UI Update Module
+
+const redirectToContacts = () => {
+    window.location.href = '/contacts.html';
+};
+
 const renderContacts = (contacts) => {
     const tableBody = document.getElementById("contacts-table-body");
     const noContactsMessage = document.getElementById("no-contacts-message");
@@ -37,8 +42,8 @@ const renderContacts = (contacts) => {
             row.innerHTML = `
                 <th scope="row">${index + 1}</th>
                <td>${contact.lname} ${contact.fname}</td>
-                <td>${contact.number}</td>
-                <td>${contact.email}</td>
+                <td><a href="tel:${contact.number}">${contact.number} </a></td>
+                <td><a href="mailto:${contact.email}">${contact.email}</a></td>
                 <td>
                     <button type="button" class="button-update" data-bs-toggle="modal"
                     data-bs-target="#editModal"
@@ -75,7 +80,7 @@ const showErrorMessage = (message, elementId) => {
 
 // API Calls Module
 const addContact = async (fname, lname, phone, email) => {
-    const response = await fetch("/api/someEndpoint.php", {
+    const response = await fetch("/api/addContact.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fname, lname, phone, email }),
@@ -96,6 +101,32 @@ const addContact = async (fname, lname, phone, email) => {
 
     return data;
 };
+
+// API Calls Module
+// API Calls Module
+const editContact = async (id, fname, lname, phone, email) => {
+    const response = await fetch("/api/editContact.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, fname, lname, phone, email }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+    }
+
+    const text = await response.text();
+    let data;
+
+    try {
+        data = JSON.parse(text);
+    } catch {
+        throw new Error("Failed to parse JSON");
+    }
+
+    return data;
+};
+
 
 // Event Handlers
 const loadContacts = async () => {
@@ -119,7 +150,29 @@ const handleAddContact = async (event) => {
     const phone = document.getElementById("phone-number").value;
     const email = document.getElementById("email").value;
 
-    console.log("Update Attempt:", { fname: fname, lname: lname, phone: phone, email: email });
+    console.log("Add Contact Attempt:", { fname: fname, lname: lname, phone: phone, email: email });
+
+    try {
+        const data = await addContact(fname, lname, phone, email);
+
+        if (data.success) {
+            redirectToContacts();
+        } else {
+            alert(data.message); // todo
+        }
+    } catch (error) {
+        console.error("Update Contact Error:", error);
+        alert("An error occurred. Please try again.");
+    }
+};
+
+const handleEditContact = async (event) => {
+    event.preventDefault();
+
+    const fname = document.getElementById("editFirstName").value;
+    const lname = document.getElementById("editLastName").value;
+    const phone = document.getElementById("editPhone").value;
+    const email = document.getElementById("editEmail").value;
 
     try {
         const data = await addContact(loginEmail, loginPassword);
@@ -127,7 +180,7 @@ const handleAddContact = async (event) => {
         if (data.success) {
             redirectToContacts();
         } else {
-            alert(data.message); // To be improved later
+            alert(data.message); // todo
         }
     } catch (error) {
         console.error("Update Contact Error:", error);
@@ -139,20 +192,20 @@ const handleAddContact = async (event) => {
 const initializeEventListeners = () => {
     document.addEventListener("DOMContentLoaded", loadContacts);
     document.querySelector("#addModal form").addEventListener("submit", handleAddContact);
+    document.querySelector("#editModal form").addEventListener("submit", handleEditContact);
 
     // Attach event listeners to update buttons
     document.addEventListener('click', function (event) {
         if (event.target.closest('.button-update')) {
             const button = event.target.closest('.button-update');
 
-            // Get data from button attributes
             const id = button.getAttribute('data-id');
             const fname = button.getAttribute('data-firstname');
             const lname = button.getAttribute('data-lastname');
             const phone = button.getAttribute('data-phone');
             const email = button.getAttribute('data-email');
 
-            // Populate modal fields
+            // prepopulate modal
             document.getElementById('editContactId').value = id;
             document.getElementById('editFirstName').value = fname;
             document.getElementById('editLastName').value = lname;
